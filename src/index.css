@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --brand-primary: #1A237E;
+  --brand-light: #E8EAF6;
+  --brand-hover: #12195e;
+  --status-open: #10B981;
+  --status-open-bg: #D1FAE5;
+  --status-urgent: #EF4444;
+  --status-urgent-bg: #FEE2E2;
+  --border-color: #E2E8F0;
+  --gold-glow: rgba(251, 191, 36, 0.3);
+  --gold-color: #F59E0B;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Base utility for hiding scrollbars while allowing scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
