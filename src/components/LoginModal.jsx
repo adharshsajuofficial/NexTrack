@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { X, Mail, Phone, Linkedin } from 'lucide-react';
+import { X, Mail, Phone } from 'lucide-react';
 import './LoginModal.css';
 
 export function LoginModal({ isOpen, onClose }) {
@@ -21,9 +21,6 @@ export function LoginModal({ isOpen, onClose }) {
     }
   };
 
-  const handleLinkedInLogin = () => {
-    alert("LinkedIn login requires a custom OpenID Connect setup in Firebase. Feature coming soon!");
-  };
 
   const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
@@ -70,9 +67,6 @@ export function LoginModal({ isOpen, onClose }) {
         <div className="auth-buttons">
           <button className="btn-social google" onClick={handleGoogleLogin}>
             <Mail size={18} /> Continue with Google
-          </button>
-          <button className="btn-social linkedin" onClick={handleLinkedInLogin}>
-            <Linkedin size={18} /> Continue with LinkedIn
           </button>
         </div>
 
