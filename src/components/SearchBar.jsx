@@ -1,8 +1,19 @@
-import React from 'react';
-import { Search, Bell, User, GraduationCap } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Bell, User, GraduationCap, LogOut } from 'lucide-react';
+import { useUser } from '../contexts/UserContext';
+import { LoginModal } from './LoginModal';
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
 import './SearchBar.css';
 
 export function SearchBar({ searchQuery, setSearchQuery, locationFilter, setLocationFilter, locations = [] }) {
+  const { user } = useUser();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    signOut(auth);
+  };
+
   return (
     <header className="top-nav">
       <div className="container nav-container">
@@ -47,11 +58,28 @@ export function SearchBar({ searchQuery, setSearchQuery, locationFilter, setLoca
           <button className="icon-btn">
             <Bell size={20} />
           </button>
-          <button className="icon-btn">
-            <User size={20} />
-          </button>
+          
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {user.photoURL ? (
+                <img src={user.photoURL} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                  {user.phoneNumber ? user.phoneNumber.substring(user.phoneNumber.length - 2) : 'U'}
+                </div>
+              )}
+              <button className="icon-btn" onClick={handleLogout} title="Logout">
+                <LogOut size={20} />
+              </button>
+            </div>
+          ) : (
+            <button className="icon-btn" onClick={() => setIsLoginModalOpen(true)}>
+              <User size={20} />
+            </button>
+          )}
         </div>
       </div>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </header>
   );
 }

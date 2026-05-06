@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ItemCard } from './ItemCard';
 import './DashboardGrid.css';
 
-export function DashboardGrid({ items }) {
+export function DashboardGrid({ items, subscriptions = [] }) {
   const [sortBy, setSortBy] = useState('value'); // 'value' or 'rating'
 
   const sortedItems = [...items].sort((a, b) => {
@@ -42,7 +42,7 @@ export function DashboardGrid({ items }) {
       {sortedItems.length > 0 ? (
         <div className="grid">
           {sortedItems.map(item => (
-            <ItemCard key={item.id} item={item} />
+            <ItemCard key={item.id} item={item} isSubscribed={subscriptions.includes(item.id)} />
           ))}
         </div>
       ) : (

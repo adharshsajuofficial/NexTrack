@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getMessaging, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC1qEAfobMSPKmhsRAHYp2QN8_f0S4o_jY",
@@ -13,3 +15,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+// Auth Export
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+
+// Messaging Export
+export let messaging = null;
+isSupported().then(supported => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+});
