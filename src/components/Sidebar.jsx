@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
 import { X, LayoutDashboard, CheckSquare, Sparkles, Bookmark, LogOut } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -53,18 +54,43 @@ export function Sidebar({ isOpen, onClose, user }) {
         </div>
 
         <nav className="sidebar-nav">
-          <a href="#" className="sidebar-link active">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              'sidebar-link' + (isActive ? ' active' : '')
+            }
+            onClick={onClose}
+            end
+          >
             <LayoutDashboard size={18} /> Dashboard
-          </a>
-          <a href="#" className="sidebar-link">
+          </NavLink>
+          <NavLink
+            to="/applied"
+            className={({ isActive }) =>
+              'sidebar-link' + (isActive ? ' active' : '')
+            }
+            onClick={onClose}
+          >
             <CheckSquare size={18} /> Applied
-          </a>
-          <a href="#" className="sidebar-link">
+          </NavLink>
+          <NavLink
+            to="/recommended"
+            className={({ isActive }) =>
+              'sidebar-link' + (isActive ? ' active' : '')
+            }
+            onClick={onClose}
+          >
             <Sparkles size={18} /> Recommended
-          </a>
-          <a href="#" className="sidebar-link">
+          </NavLink>
+          <NavLink
+            to="/shortlisted"
+            className={({ isActive }) =>
+              'sidebar-link' + (isActive ? ' active' : '')
+            }
+            onClick={onClose}
+          >
             <Bookmark size={18} /> Shortlisted
-          </a>
+          </NavLink>
         </nav>
 
         <div className="sidebar-footer">
