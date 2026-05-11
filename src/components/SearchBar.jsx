@@ -4,15 +4,13 @@ import { useUser } from '../contexts/UserContext';
 import { LoginModal } from './LoginModal';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+import { Sidebar } from './Sidebar';
 import './SearchBar.css';
 
 export function SearchBar({ searchQuery, setSearchQuery, locationFilter, setLocationFilter, locations = [] }) {
   const { user } = useUser();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  const handleLogout = () => {
-    signOut(auth);
-  };
 
   return (
     <header className="top-nav">
@@ -61,15 +59,17 @@ export function SearchBar({ searchQuery, setSearchQuery, locationFilter, setLoca
           
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {user.photoURL ? (
-                <img src={user.photoURL} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                  {user.phoneNumber ? user.phoneNumber.substring(user.phoneNumber.length - 2) : 'U'}
-                </div>
-              )}
-              <button className="icon-btn" onClick={handleLogout} title="Logout">
-                <LogOut size={20} />
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                    {user.phoneNumber ? user.phoneNumber.substring(user.phoneNumber.length - 2) : 'U'}
+                  </div>
+                )}
               </button>
             </div>
           ) : (
@@ -80,6 +80,7 @@ export function SearchBar({ searchQuery, setSearchQuery, locationFilter, setLoca
         </div>
       </div>
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} user={user} />
     </header>
   );
 }

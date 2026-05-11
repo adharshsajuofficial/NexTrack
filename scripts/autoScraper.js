@@ -1,9 +1,32 @@
 import FirecrawlApp from '@mendable/firecrawl-js';
+
 import { collection, getDocs, addDoc, query, where } from 'firebase/firestore';
-import { db } from '../src/firebase.js';
 import dotenv from 'dotenv';
 
-dotenv.config();
+let db;
+let Timestamp;
+
+// Check for FIREBASE_SERVICE_ACCOUNT (for GitHub Actions)
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // Running in GitHub Actions or with service account
+  const admin = await import('firebase-admin');
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
+  db = admin.firestore();
+  Timestamp = (await import('firebase-admin/firestore')).Timestamp;
+} else {
+  // Local dev: use dotenv and web SDK
+  dotenv.config();
+  // Import db from web SDK
+  const { db: webDb } = await import('../src/firebase.js');
+  db = webDb;
+  // Use a fallback Timestamp for local (not used, but for code compatibility)
+  Timestamp = { fromDate: (date) => date };
+}
 
 // Support both naming conventions from the .env file
 const apiKey = process.env.VITE_FIRECRAWL_API_KEY;
@@ -96,13 +119,24 @@ async function seedDatabase(dataArray) {
       const q = query(opportunitiesRef, where("title", "==", item.title));
       const querySnapshot = await getDocs(q);
 
+      // Parse deadline string to Date, fallback to 30 days from now if missing/invalid
+      let deadlineDate;
+      if (item.deadline && /^\d{4}-\d{2}-\d{2}$/.test(item.deadline)) {
+        deadlineDate = new Date(item.deadline);
+        if (isNaN(deadlineDate.getTime())) {
+          deadlineDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        }
+      } else {
+        deadlineDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      }
+
       if (querySnapshot.empty) {
         // Title doesn't exist, add it
         await addDoc(opportunitiesRef, {
           title: item.title,
           organization: item.organization || '',
           value: item.value || '',
-          deadline: item.deadline || '',
+          deadline: Timestamp.fromDate(deadlineDate),
           category: item.category || 'Hackathons',
           link: item.link || '',
           location: item.location || 'Remote',
